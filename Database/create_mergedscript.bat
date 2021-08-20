@@ -1,0 +1,1 @@
+copy /B up\*.* + sp\*.* mergedscript.sql
