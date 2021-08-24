@@ -6,10 +6,16 @@ namespace moo_server.Core.BL.Interfaces
     {
         // Возвращает или создаёт пользователя по идетификатору Телеграм
         User GetOrCreateUserByTgId(UserModel userModel);
-        // Возвращает пользователя по идетификатору Телеграм
+
+        // Возвращает пользователя по идентификатору Телеграм
         User GetUser(long tgId);
+
+        // Возвращает пользователя по имени пользователя в Telegram
+        User GetUserByTgUsername(string tgUsername);
+
         // Обновляет пользователя
         bool UpdateUser(User user);
+
         // Обновляет количество Му и дату последнего Му пользователя
         bool UpdateUserMooCountAndLastMooDateById(User user);
     }

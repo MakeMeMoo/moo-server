@@ -22,6 +22,11 @@ namespace moo_server.Core.BL.Interfaces
             return _usersRepository.GetUser(tgId);
         }
 
+        public User GetUserByTgUsername(string tgUsername)
+        {
+            return _usersRepository.GetUserByTgUsername(tgUsername);
+        }
+
         public bool UpdateUser(User user)
         {
             return _usersRepository.UpdateUser(user);

@@ -1,46 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using AutoMapper;
 using moo_server.Core.BL.Interfaces;
-using moo_server.Core.Entities;
 using moo_server.Models;
+using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace moo_server.Controllers
 {
+    [Authorize]
     [ApiController]
-    [Route("[controller]/[action]")]
-    public class AccountController : ControllerBase
+    [Route("api/[controller]")]
+    public class MooController : ControllerBase
     {
-        private readonly ILogger<AccountController> _logger;
-        private readonly IMapper _mapper;
         private readonly IUsersBL _usersBL;
 
-        public AccountController(ILogger<AccountController> logger, IMapper mapper, IUsersBL usersBL)
+        public MooController(IUsersBL usersBL)
         {
-            _logger = logger;
-            _mapper = mapper;
             _usersBL = usersBL;
         }
 
-        [HttpPost]
-        public UserModel Start(UserModel userModel)
-        {
-            var user = _usersBL.GetOrCreateUserByTgId(userModel);
-            userModel = _mapper.Map<UserModel>(user);
-            return userModel;
-        }
-
-        [HttpGet]
-        public ResponseModel ClickMoo(long tgId)
+        [SwaggerOperation(Summary = "Сказать \"Муу\"")]
+        [HttpGet("user")]
+        [Authorize]
+        public ResponseModel SayMoo()
         {
             var responseModel = new ResponseModel();
 
-            var user = _usersBL.GetUser(tgId);
+            //TODO: move this logic to method SayMoo in UserBL that will return message 'moo...'
+            var user = _usersBL.GetUserByTgUsername(User.Identity?.Name);
             if (user != null && (user.LastMooDate == null || user.LastMooDate.Value.AddMinutes(1) < DateTimeOffset.Now))
             {
-                
-
                 user.LastMooDate = DateTimeOffset.Now;
                 user.MooCount++;
                 _usersBL.UpdateUserMooCountAndLastMooDateById(user);

@@ -65,6 +65,28 @@ namespace moo_server.Core.DAL
             }
         }
 
+        public User GetUserByTgUsername(string tgUsername)
+        {
+            try
+            {
+                User user;
+                using (var con = new SqlConnection(connectionString))
+                {
+                    if (con.State == ConnectionState.Closed)
+                        con.Open();
+
+                    var parameter = new DynamicParameters();
+                    parameter.Add("@TgUsername", tgUsername);
+                    user = con.Query<User>("spGetUserByTgUsername", parameter, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                }
+                return user;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public bool UpdateUser(User user)
         {
             try
